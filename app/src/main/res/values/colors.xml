@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#DA0209</color>
+    <color name="colorPrimaryDark">#B40707</color>
+    <color name="colorAccent">#DA0209</color>
+
+
+    <!--    App custom color-->
+    <color name="red">#EE1D23</color>
+    <color name="dark_red">#D5191E</color>
+    <color name="dark_orange">#b22222</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray">#464343</color>
+    <color name="light_gray">#DAD7D7</color>
+    <color name="soft_light_white">#F2F2F7</color>
+
+</resources>

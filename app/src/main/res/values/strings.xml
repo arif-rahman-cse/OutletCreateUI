@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">OutletCreateUI</string>
+    <string name="MAP_API_KEY">AIzaSyCfioTd6z0_DC92sWtanv-6K_UaSCAbJtU</string>
+
+    <!--    Create Outlet String -->
+    <string name="upload_image">Upload Image</string>
+    <string name="out_late_id">Outlet ID</string>
+    <string name="out_late_name">Outlet Name</string>
+    <string name="proprietor_name">Proprietor Name</string>
+    <string name="proprietor_info">Proprietor Info</string>
+    <string name="contact_person_name">Contact Person Name</string>
+    <string name="contact_person_phone">Contact Person Phone</string>
+    <string name="proprietor_contact_number">Contact Number</string>
+    <string name="nid">NID</string>
+    <string name="email">Email</string>
+    <string name="search_outlet_address">Search Outlet Address</string>
+    <string name="thana">Thana</string>
+    <string name="district">District</string>
+    <string name="union_bazar">Union / Bazar</string>
+    <string name="premier">Primer</string>
+    <string name="non_premier">Non Premier</string>
+    <string name="select_route">Select Route</string>
+    <string name="select_dealer">Select Dealer</string>
+    <string name="selling_other_categories">Selling other categories</string>
+    <string name="remarks_special_note">Remarks / Special Note</string>
+    <string name="add_your_remarks_here">Add Your Remarks here</string>
+
+    <string name="age">Age</string>
+    <string name="home_districts">Home Districts</string>
+    <string name="residence">Residence</string>
+    <string name="family">Family Info</string>
+    <string name="add_proprietor_family_info">Add proprietor family info</string>
+
+    <string name="steel">Steel</string>
+    <string name="brick">Brick</string>
+    <string name="sand">Sand</string>
+    <string name="food">Food</string>
+    <string name="stone">Stone</string>
+    <string name="others">Others</string>
+    <string name="add_other_categories">Add other categories</string>
+
+    <string name="submit_button">Submit</string>
+
+</resources>
