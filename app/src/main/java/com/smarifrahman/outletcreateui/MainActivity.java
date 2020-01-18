@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +66,14 @@ import com.smarifrahman.outletcreateui.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private static final String TAG = "MainActivity";
+
+    //wiz
+    private TextView capturePhoto, browseGallery;
+    private MaterialButton closeBtn;
+    private RecyclerView searchRecyclerView;
+    private SearchView searchView;
+
+    //Var
     private static final int AUTOCOMPLETE_REQUEST_CODE = 101;
     private static final int LOCATION_PERMISSION_ID = 102;
     private static final int GALLERY_REQUEST_CODE = 103;
@@ -72,11 +81,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int PICK_FROM_CAMERA = 105;
     private ActivityMainBinding mainBinding;
     private FusedLocationProviderClient mFusedLocationClient;
-
-    private TextView capturePhoto, browseGallery;
-    private MaterialButton closeBtn;
-    private RecyclerView searchRecyclerView;
     private List<String> categories;
+    private SearchViewAdapter searchViewAdapter;
+    private ArrayAdapter<CharSequence> adapter;
+    private PlacesClient placesClient;
 
 
     @Override
@@ -105,58 +113,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mainBinding.others.setOnClickListener(this);
         mainBinding.otherCategories.setOnClickListener(this);
 
+        //Address
+        mainBinding.outletUnionBazar.setEnabled(false);
+        mainBinding.outletThana.setEnabled(false);
+        mainBinding.outletDistricts.setEnabled(false);
+
 
         // Spinner Drop down elements
         categories = new ArrayList<>();
         categories.add("- Select Dealer -");
-        categories.add("Item 2");
-        categories.add("Item 3");
-        categories.add("Item 4");
-        categories.add("Item 5");
-        categories.add("Item 6");
-        categories.add("Item 7");
-        categories.add("Item 8");
-        categories.add("Item 9");
-        categories.add("Item 10");
-        categories.add("Item 11");
-        categories.add("Item 2");
-        categories.add("Item 3");
-        categories.add("Item 4");
-        categories.add("Item 5");
-        categories.add("Item 6");
-        categories.add("Item 7");
-        categories.add("Item 8");
-        categories.add("Item 9");
-        categories.add("Item 10");
-
-        /*
-        // Spinner Drop down elements
-        List<String> categories = new ArrayList<>();
-        categories.add("- Select Dealer -");
-        categories.add("Item 2");
-        categories.add("Item 3");
-        categories.add("Item 4");
-        categories.add("Item 5");
-        categories.add("Item 6");
-        categories.add("Item 7");
-        categories.add("Item 8");
-        categories.add("Item 9");
-        categories.add("Item 10");
-        categories.add("Item 11");
-
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_selected_item, categories);
-        dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-        mainBinding.dealerSpinner.setAdapter(dataAdapter);
-        mainBinding.routeSpinner.setAdapter(dataAdapter);
-
-         */
+        categories.add("Samsung");
+        categories.add("Foxconn");
+        categories.add("Apple");
+        categories.add("Oppo");
+        categories.add("Nokia");
+        categories.add("LYF");
+        categories.add("Xiaomi");
+        categories.add("Huawei");
+        categories.add("Asus");
+        categories.add("Lenovo");
+        categories.add("Nokia");
+        categories.add("LYF");
+        categories.add("Xiaomi");
 
 
         // Creating ArrayAdapter using the string array and default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        adapter = ArrayAdapter.createFromResource(this,
                 R.array.mobile_manufacturers, android.R.layout.simple_spinner_item);
 
         // Specify layout to be used when list of choices appears
@@ -178,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         // Create a new Places client instance.
-        PlacesClient placesClient = Places.createClient(this);
+        placesClient = Places.createClient(this);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -235,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             case R.id.pick_current_Location: {
                 Log.d(TAG, "onClick: Current location: ");
-                //getDeviceCurrentLocation();
+                getDeviceCurrentLocation();
                 break;
             }
 
@@ -329,6 +311,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+
+    //------------------------------------- Search dealer and route -------------------------------//
     private void uopUpSearchView(View v) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -346,23 +330,44 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         closeBtn = dialogView.findViewById(R.id.search_close_btn);
         searchRecyclerView = dialogView.findViewById(R.id.search_view_rv);
+        searchView = dialogView.findViewById(R.id.search_view);
 
 
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Toast.makeText(MainActivity.this, "clicked" + categories, Toast.LENGTH_LONG).show();
+                Log.d(TAG, "onClick: Dialog Closed: " + categories);
                 alertDialog.dismiss();
             }
         });
 
-        searchRecyclerView.setHasFixedSize(false);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchViewAdapter.getFilter().filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchViewAdapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+
+        searchRecyclerView.setHasFixedSize(true);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        SearchViewAdapter searchViewAdapter = new SearchViewAdapter(this, categories);
+        searchViewAdapter = new SearchViewAdapter(this, categories);
         searchRecyclerView.setAdapter(searchViewAdapter);
+        searchViewAdapter.notifyDataSetChanged();
 
     }
 
-    //------------------------------------------ popup option dialog ------------------------------//
+
+    //-------------------------------- popup option dialog for pic photo --------------------------//
     private void popUpOptionDialog(View v) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -448,7 +453,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    //----------------------------------- Get User Location ---------------------------------------//
+    //----------------------------------- Get User Current Location -------------------------------//
     @SuppressLint("MissingPermission")
     private void getDeviceCurrentLocation() {
         if (checkPermissions()) {
@@ -528,20 +533,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + ", " + place.getAddress());
-                Toast.makeText(MainActivity.this, "ID: " + place.getId() + "address:" + place.getAddress() + "Name:" + place.getName() + " latlong: " + place.getLatLng(), Toast.LENGTH_LONG).show();
-                String address = place.getAddress();
+                Log.d(TAG, "Place: " + place.getName() + ", " + place.getId() + ", " + place.getAddress());
 
-                mainBinding.outletAddress.setText(address);
+                String placeName = place.getName();
+                String fullAddress = place.getAddress();
+
+                mainBinding.outletAddress.setText(placeName);
                 // do query with address
 
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Toast.makeText(MainActivity.this, "Error: " + status.getStatusMessage(), Toast.LENGTH_LONG).show();
-                Log.i(TAG, status.getStatusMessage());
+                Log.i(TAG, "Status; " + status.getStatusMessage());
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
+                Log.d(TAG, "onActivityResult: User canceled the request");
             }
         }
 
@@ -632,23 +639,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         );
     }
 
-    //------------------------------ Get Location from lat long -----------------------------------//
-    private String getAddress(double latitude, double longitude) {
-        StringBuilder result = new StringBuilder();
+    //---------------- Get Location from user current latitude and longitude ----------------------//
+    private void getAddress(double latitude, double longitude) {
         try {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
-                result.append(address.getLocality()).append(", ");
-                result.append(address.getCountryName());
 
-                mainBinding.outletAddress.setText(address.toString());
+                String outletLocation = address.getAddressLine(0);
+                String outletUnion = address.getLocality();
+                String outletThana = address.getSubAdminArea();
+                String outletDistrict = address.getAdminArea();
+
+                Log.d(TAG, "getAddress: Outlent Address: "+ outletLocation+ " Union: "+ outletUnion+ " Thana: "+ outletThana+ " District: "+ outletDistrict);
+                mainBinding.outletAddress.setText(outletLocation);
+                mainBinding.outletUnionBazar.setText(outletUnion);
+                mainBinding.outletThana.setText(outletThana);
+                mainBinding.outletDistricts.setText(outletDistrict);
             }
         } catch (IOException e) {
             Log.e("tag", e.getMessage());
         }
 
-        return result.toString();
     }
 }
