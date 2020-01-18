@@ -17,16 +17,19 @@
     <string name="thana">Thana</string>
     <string name="district">District</string>
     <string name="union_bazar">Union / Bazar</string>
-    <string name="premier">Primer</string>
-    <string name="non_premier">Non Premier</string>
+    <string name="premier">Selling Premier</string>
+    <string name="non_premier">Non-Selling Premier</string>
     <string name="select_route">Select Route</string>
     <string name="select_dealer">Select Dealer</string>
     <string name="selling_other_categories">Selling other categories</string>
     <string name="remarks_special_note">Remarks / Special Note</string>
-    <string name="add_your_remarks_here">Add Your Remarks here</string>
+    <string name="add_your_remarks_here">Add Your Remarks / Special Note here</string>
+    <string name="upload_photo">Upload Photo</string>
+    <string name="capture_photo">Capture Photo</string>
+    <string name="browse_gallery">Browse Gallery</string>
 
     <string name="age">Age</string>
-    <string name="home_districts">Home Districts</string>
+    <string name="home_districts">Home District</string>
     <string name="residence">Residence</string>
     <string name="family">Family Info</string>
     <string name="add_proprietor_family_info">Add proprietor family info</string>
@@ -40,5 +43,26 @@
     <string name="add_other_categories">Add other categories</string>
 
     <string name="submit_button">Submit</string>
+
+    <!-- Spinner Item-->
+    <string-array name="mobile_manufacturers">
+        <item>Select one Item</item>
+        <item>Samsung</item>
+        <item>Foxconn</item>
+        <item>Apple</item>
+        <item>Oppo</item>
+        <item>Nokia</item>
+        <item>LYF</item>
+        <item>Xiaomi</item>
+        <item>Huawei</item>
+        <item>Asus</item>
+        <item>Lenovo</item>
+        <item>Nokia</item>
+        <item>LYF</item>
+        <item>Xiaomi</item>
+        <item>Huawei</item>
+        <item>Asus</item>
+        <item>Lenovo</item>
+    </string-array>
 
 </resources>

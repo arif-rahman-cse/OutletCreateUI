@@ -6,6 +6,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -14,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -30,9 +33,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +58,8 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.button.MaterialButton;
+import com.smarifrahman.outletcreateui.adapter.SearchViewAdapter;
 import com.smarifrahman.outletcreateui.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
@@ -67,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private FusedLocationProviderClient mFusedLocationClient;
 
     private TextView capturePhoto, browseGallery;
+    private MaterialButton closeBtn;
+    private RecyclerView searchRecyclerView;
+    private List<String> categories;
 
 
     @Override
@@ -81,8 +91,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mainBinding.addImage.setOnClickListener(this);
         mainBinding.outletAddressSearch.setOnClickListener(this);
         mainBinding.pickCurrentLocation.setOnClickListener(this);
-        mainBinding.dealerSpinner.setOnItemSelectedListener(this);
-        mainBinding.routeSpinner.setOnItemSelectedListener(this);
+        mainBinding.spinnerDealer.setOnItemSelectedListener(this);
+        mainBinding.spinnerRoute.setOnItemSelectedListener(this);
+        mainBinding.test.setOnClickListener(this);
+
         mainBinding.premier.setOnClickListener(this);
         mainBinding.nonPremier.setOnClickListener(this);
         mainBinding.submitBtn.setOnClickListener(this);
@@ -93,6 +105,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mainBinding.others.setOnClickListener(this);
         mainBinding.otherCategories.setOnClickListener(this);
 
+
+        // Spinner Drop down elements
+        categories = new ArrayList<>();
+        categories.add("- Select Dealer -");
+        categories.add("Item 2");
+        categories.add("Item 3");
+        categories.add("Item 4");
+        categories.add("Item 5");
+        categories.add("Item 6");
+        categories.add("Item 7");
+        categories.add("Item 8");
+        categories.add("Item 9");
+        categories.add("Item 10");
+        categories.add("Item 11");
+        categories.add("Item 2");
+        categories.add("Item 3");
+        categories.add("Item 4");
+        categories.add("Item 5");
+        categories.add("Item 6");
+        categories.add("Item 7");
+        categories.add("Item 8");
+        categories.add("Item 9");
+        categories.add("Item 10");
+
+        /*
         // Spinner Drop down elements
         List<String> categories = new ArrayList<>();
         categories.add("- Select Dealer -");
@@ -114,6 +151,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // attaching data adapter to spinner
         mainBinding.dealerSpinner.setAdapter(dataAdapter);
         mainBinding.routeSpinner.setAdapter(dataAdapter);
+
+         */
+
+
+        // Creating ArrayAdapter using the string array and default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.mobile_manufacturers, android.R.layout.simple_spinner_item);
+
+        // Specify layout to be used when list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Applying the adapter to spinner
+        mainBinding.spinnerDealer.setAdapter(adapter);
+        mainBinding.spinnerRoute.setAdapter(adapter);
 
 
         String mapApiKey = getString(R.string.MAP_API_KEY);
@@ -164,6 +215,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         switch (clickedId) {
 
+            case R.id.test: {
+                uopUpSearchView(v);
+                break;
+            }
+
             case R.id.add_image: {
                 popUpOptionDialog(v);
                 break;
@@ -190,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     mainBinding.nonPremier.setChecked(false);
                     Toast.makeText(this, "Premier", Toast.LENGTH_SHORT).show();
                 }
+                break;
             }
 
             case R.id.non_premier: {
@@ -198,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     mainBinding.premier.setChecked(false);
                     Toast.makeText(this, "Non Premier", Toast.LENGTH_SHORT).show();
                 }
+                break;
 
             }
 
@@ -206,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (mainBinding.steel.isChecked()) {
                     Toast.makeText(this, "Steel", Toast.LENGTH_SHORT).show();
                 }
+                break;
 
             }
 
@@ -214,6 +273,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (mainBinding.sand.isChecked()) {
                     Toast.makeText(this, "Sand", Toast.LENGTH_SHORT).show();
                 }
+                break;
 
             }
 
@@ -222,6 +282,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (mainBinding.brick.isChecked()) {
                     Toast.makeText(this, "Brick", Toast.LENGTH_SHORT).show();
                 }
+                break;
 
             }
 
@@ -230,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (mainBinding.stone.isChecked()) {
                     Toast.makeText(this, "Stone", Toast.LENGTH_SHORT).show();
                 }
+                break;
 
             }
 
@@ -238,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (mainBinding.food.isChecked()) {
                     Toast.makeText(this, "Food", Toast.LENGTH_SHORT).show();
                 }
+                break;
 
             }
 
@@ -252,15 +315,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (!mainBinding.others.isChecked()) {
                     mainBinding.otherCategories.setVisibility(View.GONE);
                 }
+                break;
 
             }
 
             //----------------------------------- Submit Data -------------------------------------//
             case R.id.submit_btn: {
                 //TODO
+                break;
             }
 
         }
+
+    }
+
+    private void uopUpSearchView(View v) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setCancelable(true);
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from(v.getContext()).inflate(R.layout.search_view, viewGroup, false);
+        builder.setView(dialogView);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        initSearchXml(dialogView, alertDialog);
+    }
+
+    private void initSearchXml(View dialogView, final AlertDialog alertDialog) {
+
+        closeBtn = dialogView.findViewById(R.id.search_close_btn);
+        searchRecyclerView = dialogView.findViewById(R.id.search_view_rv);
+
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        searchRecyclerView.setHasFixedSize(false);
+        searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        SearchViewAdapter searchViewAdapter = new SearchViewAdapter(this, categories);
+        searchRecyclerView.setAdapter(searchViewAdapter);
 
     }
 
@@ -451,7 +549,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (requestCode == PICK_FROM_CAMERA && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mainBinding.proprietorImage.setImageBitmap(imageBitmap);
+
+            // Initialize a new ByteArrayStream
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
+            byte[] byteArray = stream.toByteArray();
+            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
+            // Display the compressed bitmap in ImageView
+            mainBinding.proprietorImage.setImageBitmap(compressedBitmap);
+            Toast.makeText(this, "Compressed Image / JPEG 50% Quality.", Toast.LENGTH_SHORT).show();
+
 
         } else if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
 

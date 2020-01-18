@@ -44,4 +44,7 @@ dependencies {
 
     //Location
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+
+    //Search on Spinner
+    implementation 'com.toptoche.searchablespinner:searchablespinnerlibrary:1.3.1'
 }
